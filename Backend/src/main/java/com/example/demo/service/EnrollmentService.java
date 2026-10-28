@@ -29,6 +29,7 @@ public class EnrollmentService {
         enrollment.setStudentName(studentName);
         enrollment.setStudentEmail(studentEmail);
         enrollment.setEnrollmentDate(LocalDate.now());
+        enrollment.setProgress(15); // Default starting progress
 
         return enrollmentRepository.save(enrollment);
     }
@@ -39,5 +40,14 @@ public class EnrollmentService {
 
     public List<Enrollment> getAllEnrollments() {
         return enrollmentRepository.findAll();
+    }
+
+    // New method to update and persist progress in MySQL
+    public Enrollment updateEnrollmentProgress(Long id, Integer progress) {
+        Enrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found with id: " + id));
+        
+        enrollment.setProgress(progress);
+        return enrollmentRepository.save(enrollment);
     }
 }
