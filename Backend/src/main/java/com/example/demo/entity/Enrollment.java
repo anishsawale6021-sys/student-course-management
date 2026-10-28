@@ -7,84 +7,96 @@ import java.time.LocalDate;
 @Table(name = "enrollments")
 public class Enrollment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private Long courseId;
-    private String courseTitle;
-    private String department;
-    private String instructor;
-    private String studentName;
-    private String studentEmail;
-    
-    private LocalDate enrollmentDate;
+	private Long courseId;
+	private String courseTitle;
+	private String department;
+	private String instructor;
+	private String studentName;
+	private String studentEmail;
 
-    // Default Constructor
-    public Enrollment() {}
+	private LocalDate enrollmentDate;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+	// Added progress field for persistence (defaults to 15%)
+	private Integer progress = 15;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	// Default Constructor
+	public Enrollment() {
+	}
 
-    public Long getCourseId() {
-        return courseId;
-    }
+	// Getters and Setters
+	public Long getId() {
+		return id;
+	}
 
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getCourseTitle() {
-        return courseTitle;
-    }
+	public Long getCourseId() {
+		return courseId;
+	}
 
-    public void setCourseTitle(String courseTitle) {
-        this.courseTitle = courseTitle;
-    }
+	public void setCourseId(Long courseId) {
+		this.courseId = courseId;
+	}
 
-    public String getDepartment() {
-        return department;
-    }
+	public String getCourseTitle() {
+		return courseTitle;
+	}
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
+	}
 
-    public String getInstructor() {
-        return instructor;
-    }
+	public String getDepartment() {
+		return department;
+	}
 
-    public void setInstructor(String instructor) {
-        this.instructor = instructor;
-    }
+	public void setDepartment(String department) {
+		this.department = department;
+	}
 
-    public String getStudentName() {
-        return studentName;
-    }
+	public String getInstructor() {
+		return instructor;
+	}
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
+	public void setInstructor(String instructor) {
+		this.instructor = instructor;
+	}
 
-    public String getStudentEmail() {
-        return studentEmail;
-    }
+	public String getStudentName() {
+		return studentName;
+	}
 
-    public void setStudentEmail(String studentEmail) {
-        this.studentEmail = studentEmail;
-    }
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
 
-    public LocalDate getEnrollmentDate() {
-        return enrollmentDate;
-    }
+	public String getStudentEmail() {
+		return studentEmail;
+	}
 
-    public void setEnrollmentDate(LocalDate enrollmentDate) {
-        this.enrollmentDate = enrollmentDate;
-    }
+	public void setStudentEmail(String studentEmail) {
+		this.studentEmail = studentEmail;
+	}
+
+	public LocalDate getEnrollmentDate() {
+		return enrollmentDate;
+	}
+
+	public void setEnrollmentDate(LocalDate enrollmentDate) {
+		this.enrollmentDate = enrollmentDate;
+	}
+
+	public Integer getProgress() {
+		return progress;
+	}
+
+	public void setProgress(Integer progress) {
+		this.progress = progress;
+	}
 }
