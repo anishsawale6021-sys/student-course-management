@@ -32,7 +32,6 @@ public class CourseService {
         course.setDescription(courseDetails.getDescription());
         course.setInstructor(courseDetails.getInstructor());
         course.setDuration(courseDetails.getDuration());
-        course.setDepartment(courseDetails.getDepartment());
         return courseRepository.save(course);
     }
 

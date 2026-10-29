@@ -16,7 +16,10 @@ public class Course {
 
 	private String instructor;
 	private String duration;
-	private String department;
+
+	// Default Constructor
+	public Course() {
+	}
 
 	// Getters and Setters
 	public Long getId() {
@@ -57,13 +60,5 @@ public class Course {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
 	}
 }
