@@ -20,12 +20,11 @@ public class EnrollmentController {
 	@PostMapping("/courses/{id}/enroll")
 	public Enrollment enrollCourse(@PathVariable Long id, @RequestBody Map<String, String> requestBody) {
 		String courseTitle = requestBody.get("courseTitle");
-		String department = requestBody.get("department");
 		String instructor = requestBody.get("instructor");
 		String studentName = requestBody.get("studentName");
 		String studentEmail = requestBody.get("studentEmail");
 
-		return enrollmentService.enrollStudent(id, courseTitle, department, instructor, studentName, studentEmail);
+		return enrollmentService.enrollStudent(id, courseTitle, instructor, studentName, studentEmail);
 	}
 
 	// GET /api/enrollments - My courses / Student enrollments[cite: 6]

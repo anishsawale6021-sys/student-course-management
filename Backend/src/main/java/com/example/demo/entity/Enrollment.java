@@ -13,7 +13,6 @@ public class Enrollment {
 
 	private Long courseId;
 	private String courseTitle;
-	private String department;
 	private String instructor;
 	private String studentName;
 	private String studentEmail;
@@ -50,14 +49,6 @@ public class Enrollment {
 
 	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
 	}
 
 	public String getInstructor() {

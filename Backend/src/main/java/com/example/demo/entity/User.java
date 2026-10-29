@@ -16,7 +16,6 @@ public class User {
 
 	private String password;
 	private String phone;
-	private String department;
 	private String role; // 'STUDENT' or 'ADMIN'
 
 	// Getters and Setters
@@ -58,14 +57,6 @@ public class User {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
 	}
 
 	public String getRole() {
