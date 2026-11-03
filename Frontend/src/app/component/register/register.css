@@ -1,0 +1,280 @@
+/* Component Host Styling */
+:host {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Page Outer Wrapper */
+.auth-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    background-color: #F5F3FF;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #25213B;
+}
+
+/* Background Abstract Shape 1 - Golden Yellow Circle */
+.auth-page-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 260px;
+    height: 260px;
+    background-color: #FFC857;
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0.75;
+}
+
+/* Background Abstract Shape 2 - Lighter Purple Square */
+.auth-page-wrapper::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 220px;
+    height: 220px;
+    background-color: #8B75E5;
+    transform: rotate(45deg);
+    border-radius: 28px;
+    z-index: 0;
+    opacity: 0.65;
+}
+
+/* Main Split Card */
+.auth-card {
+    display: flex;
+    width: 100%;
+    max-width: 880px;
+    min-height: 520px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(91, 60, 196, 0.12);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    border: 1px solid #e0d9f7;
+}
+
+/* Left Banner Panel - Modern Deep Purple Gradient */
+.banner-panel {
+    flex: 1;
+    background: linear-gradient(135deg, #5B3CC4 0%, #8B75E5 100%);
+    color: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.brand-icon {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.banner-content h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.banner-content p {
+    font-size: 13px;
+    color: #f3f0ff;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* White Pill Button on Banner */
+.btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 9px 26px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    background: #FFC857;
+    border-color: #FFC857;
+    color: #25213B;
+    transform: translateY(-2px);
+}
+
+/* Right Form Panel */
+.form-panel {
+    flex: 1.2;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.form-panel h2 {
+    font-size: 26px;
+    color: #5B3CC4;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.form-grid-single {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: #F5F3FF;
+    border: 1px solid #d1cbe5;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #25213B;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #5B3CC4;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(91, 60, 196, 0.12);
+}
+
+/* Deep Purple Action Button */
+.btn-submit {
+    width: 100%;
+    background: #5B3CC4;
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 8px 18px rgba(91, 60, 196, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-submit:hover {
+    background: #8B75E5;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(91, 60, 196, 0.35);
+}
+
+/* Error Banner */
+.error-banner {
+    background: #fff8e6;
+    color: #8c6200;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    border: 1px solid #FFC857;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .auth-page-wrapper {
+        padding: 12px;
+    }
+
+    .auth-card {
+        flex-direction: column;
+        min-height: auto;
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .banner-panel {
+        padding: 30px 20px;
+    }
+
+    .form-panel {
+        padding: 30px 20px;
+        width: 100%;
+        max-height: none;
+        /* Allows natural scrolling on mobile */
+    }
+
+    .form-grid-single,
+    .error-banner {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page-wrapper {
+        padding: 8px;
+    }
+
+    .banner-panel,
+    .form-panel {
+        padding: 24px 18px;
+    }
+
+    .banner-content h2 {
+        font-size: 24px;
+    }
+
+    .form-panel h2 {
+        font-size: 24px;
+    }
+
+    .form-group input,
+    .form-group select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+}

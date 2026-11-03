@@ -1,0 +1,40 @@
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+
+        <!-- Left Banner Panel -->
+        <div class="banner-panel">
+            <div class="brand-logo">
+                <div class="brand-icon">🎓</div>
+                <span>EduPortal</span>
+            </div>
+
+            <div class="banner-content">
+                <h2>Hello, Friend!</h2>
+                <p>Enter your personal details and start your journey with us</p>
+                <a routerLink="/register" class="btn-outline">Sign Up</a>
+            </div>
+        </div>
+
+        <!-- Right Login Form Panel -->
+        <div class="form-panel">
+            <h2>Sign In</h2>
+
+            <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+            <form class="form-grid-single" (ngSubmit)="onLogin()">
+
+                <div class="form-group">
+                    <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="Email" required />
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Password"
+                        required />
+                </div>
+
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+        </div>
+
+    </div>
+</div>

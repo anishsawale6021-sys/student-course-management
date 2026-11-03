@@ -1,0 +1,240 @@
+/* Container Layout */
+.course-catalog-container {
+    padding: 32px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    background-color: #F5F3FF;
+    min-height: 100vh;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #25213B;
+}
+
+.catalog-header {
+    margin-bottom: 24px;
+}
+
+.catalog-header h2 {
+    font-size: 26px;
+    color: #5B3CC4;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.catalog-header p {
+    color: #6b638c;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Sub-Navigation Tabs */
+.sub-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #e0d9f7;
+    padding-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.sub-tabs button {
+    background: #eae6fc;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #5B3CC4;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sub-tabs button:hover {
+    background: #d1cbe5;
+}
+
+.sub-tabs button.active {
+    background: #5B3CC4;
+    color: white;
+    box-shadow: 0 4px 12px rgba(91, 60, 196, 0.25);
+}
+
+/* Alert Banners */
+.alert-banner {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.alert-banner.success {
+    background: #e6f9f0;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.alert-banner.error {
+    background: #fff0f0;
+    color: #d93838;
+    border: 1px solid #d93838;
+}
+
+/* Empty State */
+.empty-state {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    color: #6b638c;
+    border: 1px solid #e0d9f7;
+    box-shadow: 0 4px 6px -1px rgba(91, 60, 196, 0.03);
+}
+
+/* Course Grid */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 20px;
+}
+
+.course-card {
+    background: white;
+    border: 1px solid #e0d9f7;
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px -1px rgba(91, 60, 196, 0.03);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(91, 60, 196, 0.08);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.duration-tag {
+    font-size: 12px;
+    color: #6b638c;
+    font-weight: 600;
+    background: #F5F3FF;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #e0d9f7;
+}
+
+.course-card h3 {
+    font-size: 18px;
+    color: #25213B;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 13px;
+    color: #6b638c;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.instructor-info {
+    font-size: 13px;
+    color: #4a436e;
+    margin-bottom: 16px;
+}
+
+/* Progress Section */
+.progress-section {
+    margin-bottom: 16px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #4a436e;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.progress-bar-bg {
+    background: #e0d9f7;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background: #5B3CC4;
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Action Button */
+.card-footer {
+    border-top: 1px solid #e0d9f7;
+    padding-top: 16px;
+}
+
+.btn-enroll {
+    width: 100%;
+    background: #5B3CC4;
+    color: white;
+    border: none;
+    padding: 11px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 4px 12px rgba(91, 60, 196, 0.2);
+}
+
+.btn-enroll:hover {
+    background: #8B75E5;
+}
+
+.btn-enroll.enrolled {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+@media (max-width: 600px) {
+    .course-catalog-container {
+        padding: 20px 16px;
+    }
+
+    .catalog-header h2 {
+        font-size: 23px;
+    }
+
+    .sub-tabs {
+        gap: 8px;
+    }
+
+    .sub-tabs button {
+        flex: 1 1 160px;
+        padding: 10px 12px;
+    }
+
+    .courses-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .course-card {
+        padding: 20px;
+    }
+}

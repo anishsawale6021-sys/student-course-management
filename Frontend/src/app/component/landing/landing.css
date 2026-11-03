@@ -1,0 +1,258 @@
+/* Component Host Styling */
+:host {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #F5F3FF;
+    color: #25213B;
+}
+
+.landing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Header */
+.landing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #25213B;
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    background: #5B3CC4;
+    color: white;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(91, 60, 196, 0.25);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-login {
+    color: #5B3CC4;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: opacity 0.2s;
+}
+
+.btn-login:hover {
+    opacity: 0.8;
+}
+
+.btn-register {
+    background: #5B3CC4;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(91, 60, 196, 0.25);
+    transition: all 0.2s;
+}
+
+.btn-register:hover {
+    background: #8B75E5;
+    transform: translateY(-1px);
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 60px 0;
+}
+
+.hero-content {
+    max-width: 700px;
+    margin-bottom: 60px;
+}
+
+.badge {
+    display: inline-block;
+    background: #ece8fd;
+    color: #5B3CC4;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    border: 1px solid #d1cbe5;
+}
+
+.hero-content h1 {
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 800;
+    color: #25213B;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 16px;
+    color: #6b638c;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.btn-primary {
+    background: #5B3CC4;
+    color: white;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(91, 60, 196, 0.3);
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: #8B75E5;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    color: #5B3CC4;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.btn-secondary:hover {
+    opacity: 0.8;
+}
+
+/* Feature Cards Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
+}
+
+.feature-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(91, 60, 196, 0.05);
+    border: 1px solid #e0d9f7;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(91, 60, 196, 0.08);
+}
+
+.feature-icon {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    font-size: 18px;
+    color: #25213B;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.feature-card p {
+    color: #6b638c;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .landing-container {
+        padding: 12px 16px 24px;
+    }
+
+    .landing-header {
+        gap: 12px;
+        padding: 12px 0;
+    }
+
+    .brand-logo {
+        gap: 8px;
+        font-size: 18px;
+    }
+
+    .auth-buttons {
+        gap: 4px;
+    }
+
+    .btn-login {
+        padding: 10px 8px;
+    }
+
+    .btn-register {
+        padding: 10px 14px;
+        white-space: nowrap;
+    }
+
+    .hero-section {
+        padding: 36px 0 16px;
+    }
+
+    .hero-content {
+        margin-bottom: 36px;
+    }
+
+    .hero-actions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .btn-primary {
+        text-align: center;
+    }
+
+    .features-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .feature-card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 380px) {
+    .landing-header {
+        flex-wrap: wrap;
+    }
+
+    .auth-buttons {
+        margin-left: auto;
+    }
+}

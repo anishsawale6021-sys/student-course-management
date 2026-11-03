@@ -1,0 +1,274 @@
+<div class="dashboard-layout">
+    <input class="sidebar-toggle" type="checkbox" id="admin-sidebar-toggle" aria-label="Toggle navigation menu">
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <label class="sidebar-close" for="admin-sidebar-toggle" aria-label="Close navigation">&times;</label>
+            <div class="brand">
+                <span class="logo">🛠️</span>
+                <h2>EduPortal <span>(Admin)</span></h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button [class.active]="currentView === 'courses'" (click)="switchView('courses')">📚 Manage
+                    Courses</button>
+                <button [class.active]="currentView === 'enrollments'" (click)="switchView('enrollments')">👥 Student
+                    Enrollments</button>
+                <button [class.active]="currentView === 'profile'" (click)="switchView('profile')">⚙️ Edit Profile &
+                    Announcements</button>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <span class="user-name">{{ adminName }}</span>
+                <span class="user-role">Admin / Instructor</span>
+            </div>
+            <a href="#" (click)="confirmLogout($event)" class="btn-logout">Logout</a>
+        </div>
+    </aside>
+    <label class="sidebar-backdrop" for="admin-sidebar-toggle" aria-label="Close navigation"></label>
+
+    <main class="main-content">
+        <label class="sidebar-menu" for="admin-sidebar-toggle" aria-label="Open navigation">
+            <span aria-hidden="true">&#9776;</span> Menu
+        </label>
+        <header class="content-topbar hero-banner admin-hero">
+            <div class="hero-text">
+                <span class="hero-badge admin-badge">🛠️ Control Center</span>
+                <h2>{{ getGreeting() }}, <strong>{{ adminName }}</strong>! 🚀</h2>
+                <p>Manage your institution's course catalog and monitor student tracking.</p>
+                <div class="hero-actions-row">
+                    <button class="btn-hero-action" (click)="switchView('courses')">📚 Manage Courses</button>
+                    <button class="btn-hero-action" (click)="switchView('enrollments')">👥 View Enrollments</button>
+                    <button class="btn-hero-action btn-hero-primary" (click)="openAddModal()">+ Add Course</button>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-pill"><span class="stat-num">{{ courses.length }}</span><span
+                        class="stat-label">Courses</span></div>
+                <div class="stat-pill"><span class="stat-num">{{ enrolledStudents.length }}</span><span
+                        class="stat-label">Enrollments</span></div>
+            </div>
+        </header>
+
+        <div *ngIf="message" class="alert-banner success">{{ message }}</div>
+
+        <div *ngIf="currentView === 'courses'" class="view-container">
+            <div class="admin-header">
+                <div>
+                    <h3>Course Catalog</h3>
+                    <p>Click on any course row to view details, edit, or delete.</p>
+                </div>
+                <div class="header-actions">
+                    <input type="text" [(ngModel)]="searchTerm" placeholder="Search courses..." class="search-input" />
+                    <button class="btn-primary" (click)="openAddModal()">+ Add New Course</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Instructor</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let course of filteredCourses" (click)="openCourseDetails(course)"
+                            style="cursor: pointer;">
+                            <td><strong>{{ course.title }}</strong>
+                                <p class="table-desc">{{ course.description }}</p>
+                            </td>
+                            <td>{{ course.instructor }}</td>
+                            <td>{{ course.duration }}</td>
+                            <td><span style="color: #5B3CC4; font-weight: 600;">View Details ➔</span></td>
+                        </tr>
+                        <tr *ngIf="filteredCourses.length === 0">
+                            <td colspan="4" class="empty-text">No courses found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="currentView === 'enrollments'" class="view-container">
+            <div class="admin-header">
+                <div>
+                    <h3>Enrollment Records</h3>
+                    <p>Track which students have enrolled in your courses.</p>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Email Address</th>
+                            <th>Enrolled Course</th>
+                            <th>Enrollment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of enrolledStudents">
+                            <td><strong>{{ item.studentName }}</strong></td>
+                            <td>{{ item.studentEmail }}</td>
+                            <td><span class="badge">{{ item.courseTitle }}</span></td>
+                            <td>{{ item.date || 'Recently' }}</td>
+                        </tr>
+                        <tr *ngIf="enrolledStudents.length === 0">
+                            <td colspan="4" class="empty-text">No student enrollments recorded yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="currentView === 'profile'" class="view-container">
+            <div class="admin-header">
+                <div>
+                    <h3>Account Settings & Broadcasts</h3>
+                    <p>Update your personal information, change password, and manage student announcements.</p>
+                </div>
+            </div>
+            <div class="profile-card">
+                <h4 class="section-title">Personal Information</h4>
+                <div class="form-group">
+                    <label>Full Name (Starts with Capital)</label>
+                    <input type="text" [(ngModel)]="adminName" name="adminName" placeholder="Full Name"
+                        (input)="onAdminNameInput($event)"
+                        (keypress)="$event.key.match(/^[a-zA-Z\s]*$/) ? true : $event.preventDefault()"
+                        autocomplete="name" required />
+                </div>
+                <div class="form-group">
+                    <label>Email Address (Read-only)</label>
+                    <input type="email" [value]="adminEmail" disabled class="disabled-input" />
+                </div>
+                <div class="form-group">
+                    <label>Phone Number (10 digits, starts with 7,8,9)</label>
+                    <input type="text" [(ngModel)]="adminPhone" name="admin_phone_autofill_block"
+                        placeholder="Enter phone number" maxlength="10" autocomplete="off"
+                        (input)="onAdminPhoneInput($event)" (keypress)="onPhoneKeypress($event)" required />
+                </div>
+                <hr class="divider" />
+                <h4 class="section-title">📢 Broadcast Student Announcement</h4>
+                <div class="form-group">
+                    <label>Announcement Banner Message</label>
+                    <input type="text" [(ngModel)]="announcementMessage"
+                        placeholder="Type announcement for students..." />
+                </div>
+                <button class="btn-primary" (click)="updateAnnouncement()" style="margin-bottom: 20px;">Publish
+                    Announcement</button>
+                <hr class="divider" />
+                <h4 class="section-title">Change Password</h4>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" [(ngModel)]="currentPassword" name="currentPassword"
+                        placeholder="Enter current password" autocomplete="current-password" />
+                </div>
+                <div class="form-group">
+                    <label>New Password (Min 8 chars, symbol & number)</label>
+                    <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="Enter new password"
+                        autocomplete="new-password" />
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" [(ngModel)]="confirmNewPassword" name="confirmNewPassword"
+                        placeholder="Confirm new password" autocomplete="new-password" />
+                </div>
+                <button class="btn-primary" (click)="updateProfile()" [disabled]="isLoading">{{ isLoading ? 'Saving
+                    Changes...' : 'Save Profile & Password' }}</button>
+            </div>
+        </div>
+
+        <div class="modal-backdrop" *ngIf="isDetailsModalOpen && selectedCourseDetails">
+            <div class="modal-content">
+                <h3>Course Details</h3>
+                <div class="form-group"><label><strong>Title:</strong></label>
+                    <p>{{ selectedCourseDetails.title }}</p>
+                </div>
+                <div class="form-group"><label><strong>Instructor:</strong></label>
+                    <p>{{ selectedCourseDetails.instructor }}</p>
+                </div>
+                <div class="form-group"><label><strong>Duration:</strong></label>
+                    <p>{{ selectedCourseDetails.duration }}</p>
+                </div>
+                <div class="form-group"><label><strong>Description:</strong></label>
+                    <p>{{ selectedCourseDetails.description }}</p>
+                </div>
+                <div class="form-group"
+                    style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #e9ecef;">
+                    <label style="color: #5B3CC4; margin-bottom: 6px; display: block;"><strong>👥 Enrolled Students ({{
+                            getEnrolledStudentsForSelectedCourse().length }})</strong></label>
+                    <div *ngIf="getEnrolledStudentsForSelectedCourse().length > 0; else noStudents">
+                        <ul style="margin: 0; padding-left: 18px; font-size: 14px; color: #333;">
+                            <li *ngFor="let s of getEnrolledStudentsForSelectedCourse()">{{ s.studentName }} — <span
+                                    style="color: #666;">{{ s.studentEmail }}</span></li>
+                        </ul>
+                    </div>
+                    <ng-template #noStudents>
+                        <p style="margin: 0; font-size: 13px; color: #28a745; font-weight: 500;">✓ No students currently
+                            enrolled. Safe to delete.</p>
+                    </ng-template>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" (click)="closeDetailsModal()">Close</button>
+                    <button class="btn-edit" (click)="openEditModal(selectedCourseDetails)">Edit Course</button>
+                    <button class="btn-delete" (click)="deleteCourse(selectedCourseDetails.id)">Delete Course</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-backdrop" *ngIf="isModalOpen">
+            <div class="modal-content">
+                <h3>{{ isEditMode ? 'Edit Course' : 'Add New Course' }}</h3>
+                <div class="form-group">
+                    <label>Course Title</label>
+                    <input type="text" [(ngModel)]="currentCourse.title" name="title"
+                        placeholder="e.g. Advanced TypeScript" (input)="onTitleInput($event)"
+                        (keypress)="$event.key.match(/^[a-zA-Z\s\.\-\+\#\*]*$/) ? true : $event.preventDefault()"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Instructor Name</label>
+                    <input type="text" [(ngModel)]="currentCourse.instructor" name="instructor"
+                        placeholder="e.g. Dr. Jane Doe" (input)="onInstructorNameInput($event)"
+                        (keypress)="$event.key.match(/^[a-zA-Z\s\.]*$/) ? true : $event.preventDefault()" required>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <input type="text" [(ngModel)]="currentCourse.duration" placeholder="e.g. 10 Weeks">
+                </div>
+                <div class="form-group">
+                    <label>Course Level</label>
+                    <select [(ngModel)]="currentCourse.level">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea [(ngModel)]="currentCourse.description" name="description" rows="3"
+                        placeholder="Course summary..." (input)="onDescriptionInput($event)"
+                        (keypress)="$event.key.match(/^[a-zA-Z\s\.\,\!\?]*$/) ? true : $event.preventDefault()"
+                        required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" (click)="closeModal()">Cancel</button>
+                    <button class="btn-primary" (click)="saveCourse()" [disabled]="isLoading">{{ isLoading ?
+                        'Processing...' : (isEditMode ? 'Save Changes' : 'Create Course') }}</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <div class="footer-content">
+                <p>&copy; 2026 EduPortal Instructor Console. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" (click)="$event.preventDefault()">System Documentation</a><span>&bull;</span>
+                    <a href="#" (click)="$event.preventDefault()">Admin Guidelines</a><span>&bull;</span>
+                    <a href="#" (click)="$event.preventDefault()">IT Support</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+</div>

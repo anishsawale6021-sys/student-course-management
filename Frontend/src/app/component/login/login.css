@@ -1,0 +1,336 @@
+/* Component Host Styling */
+:host {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Page Outer Wrapper */
+.auth-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    background-color: #F5F3FF;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #25213B;
+}
+
+/* Background Abstract Shape 1 - Golden Yellow Circle */
+.auth-page-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 260px;
+    height: 260px;
+    background-color: #FFC857;
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0.75;
+}
+
+/* Background Abstract Shape 2 - Lighter Purple Square */
+.auth-page-wrapper::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 220px;
+    height: 220px;
+    background-color: #8B75E5;
+    transform: rotate(45deg);
+    border-radius: 28px;
+    z-index: 0;
+    opacity: 0.65;
+}
+
+/* Main Split Card */
+.auth-card {
+    width: 100%;
+    max-width: 880px;
+    min-height: 480px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(91, 60, 196, 0.12);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    border: 1px solid #e0d9f7;
+}
+
+/* Left Banner - Modern Deep Purple Gradient */
+.banner-panel {
+    flex: 1;
+    background: linear-gradient(135deg, #5B3CC4 0%, #8B75E5 100%) !important;
+    color: #ffffff !important;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.banner-panel::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    right: 30px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.15);
+    transform: rotate(45deg);
+    border-radius: 6px;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    align-self: flex-start;
+    color: #ffffff;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.banner-content {
+    max-width: 280px;
+    margin: auto 0;
+}
+
+.banner-content h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    line-height: 1.2;
+    color: #ffffff;
+}
+
+.banner-content p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #f3f0ff;
+    margin-bottom: 28px;
+}
+
+/* White Pill Button on Banner */
+.btn-outline {
+    display: inline-block;
+    padding: 11px 40px;
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff !important;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-outline:hover {
+    background: #FFC857;
+    border-color: #FFC857;
+    color: #25213B !important;
+    transform: translateY(-2px);
+}
+
+/* Right Form Panel */
+.form-panel {
+    flex: 1.2;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.form-panel h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #5B3CC4;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+/* Grid Layouts */
+.form-grid-single {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-grid-double {
+    width: 100%;
+    max-width: 400px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: #F5F3FF;
+    border: 1px solid #d1cbe5;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #25213B;
+    outline: none;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    background: #ffffff;
+    border-color: #5B3CC4;
+    box-shadow: 0 0 0 3px rgba(91, 60, 196, 0.12);
+}
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #6b638c;
+}
+
+.form-group-checkbox input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: #5B3CC4;
+}
+
+.form-group-checkbox a {
+    color: #5B3CC4;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Deep Purple Action Button */
+.btn-submit {
+    width: 100%;
+    padding: 13px;
+    background: #5B3CC4 !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 8px 18px rgba(91, 60, 196, 0.25);
+}
+
+.btn-submit:hover {
+    background: #8B75E5 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(91, 60, 196, 0.35);
+}
+
+/* Error Banner */
+.error-banner {
+    width: 100%;
+    max-width: 340px;
+    padding: 10px 14px;
+    background: #fff8e6;
+    color: #8c6200;
+    border: 1px solid #FFC857;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .auth-page-wrapper {
+        padding: 12px;
+    }
+
+    .auth-card {
+        flex-direction: column;
+        min-height: auto;
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .banner-panel {
+        padding: 30px 20px;
+    }
+
+    .form-panel {
+        padding: 30px 20px;
+        width: 100%;
+    }
+
+    .form-grid-single,
+    .error-banner {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page-wrapper {
+        padding: 8px;
+    }
+
+    .banner-panel,
+    .form-panel {
+        padding: 24px 18px;
+    }
+
+    .banner-content h2 {
+        font-size: 24px;
+    }
+
+    .form-panel h2 {
+        font-size: 24px;
+    }
+
+    .form-group input,
+    .form-group select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+}

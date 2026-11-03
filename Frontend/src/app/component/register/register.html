@@ -1,0 +1,70 @@
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+
+        <!-- Left Banner Panel (Redirects to Sign In) -->
+        <div class="banner-panel">
+            <div class="brand-logo">
+                <div class="brand-icon">🎓</div>
+                <span>EduPortal</span>
+            </div>
+
+            <div class="banner-content">
+                <h2>Welcome Back!</h2>
+                <p>To keep connected with us please login with your personal info</p>
+                <a routerLink="/login" class="btn-outline">Sign In</a>
+            </div>
+        </div>
+
+        <!-- Right Register Form Panel -->
+        <div class="form-panel">
+            <h2>Create Account</h2>
+
+            <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+            <form class="form-grid-single" (ngSubmit)="onRegister()">
+
+                <!-- 1. Full Name (Auto-capitalizes every word, blocks numbers) -->
+                <div class="form-group">
+                    <input type="text" [(ngModel)]="name" name="name" placeholder="Full Name (Auto-capitalized)"
+                        (input)="onNameInput($event)"
+                        (keypress)="$event.key.match(/^[a-zA-Z\s]*$/) ? true : $event.preventDefault()" required />
+                </div>
+
+                <!-- 2. Email Address (Compulsory @gmail.com) -->
+                <div class="form-group">
+                    <input type="email" [(ngModel)]="email" name="email" placeholder="Email Address (...@gmail.com)"
+                        required />
+                </div>
+
+                <!-- 3. Phone Number (10 digits, 1st digit must be 7, 8, or 9) -->
+                <div class="form-group">
+                    <input type="text" [(ngModel)]="phone" name="phone"
+                        placeholder="Phone (10 digits, starts with 7,8,9)" maxlength="10" (input)="onPhoneInput($event)"
+                        (keypress)="onPhoneKeypress($event)" required />
+                </div>
+
+                <div class="form-group">
+                    <select [(ngModel)]="role" name="role" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="student">Student</option>
+                        <option value="admin">Admin / Instructor</option>
+                    </select>
+                </div>
+
+                <!-- 4. Password (Min 8 chars, letter, number, symbol) -->
+                <div class="form-group">
+                    <input type="password" [(ngModel)]="password" name="password"
+                        placeholder="Password (Min 8 chars, symbol & number)" required />
+                </div>
+
+                <div class="form-group">
+                    <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword"
+                        placeholder="Confirm Password" required />
+                </div>
+
+                <button type="submit" class="btn-submit">Sign Up</button>
+            </form>
+        </div>
+
+    </div>
+</div>

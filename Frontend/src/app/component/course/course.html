@@ -1,0 +1,60 @@
+<div class="course-catalog-container">
+    <div class="catalog-header">
+        <h2>Course Management</h2>
+        <p>Explore available courses or manage your active enrollments.</p>
+    </div>
+
+    <!-- Sub-Navigation Tabs -->
+    <div class="sub-tabs">
+        <button [class.active]="selectedFilter === 'all'" (click)="setFilter('all')">
+            📚 All Available Courses
+        </button>
+        <button [class.active]="selectedFilter === 'enrolled'" (click)="setFilter('enrolled')">
+            🎓 My Enrolled Courses
+        </button>
+    </div>
+
+    <!-- Alert Banner -->
+    <div *ngIf="message" class="alert-banner" [ngClass]="messageType">
+        {{ message }}
+    </div>
+
+    <!-- Empty State for Enrolled Courses -->
+    <div *ngIf="selectedFilter === 'enrolled' && displayedCourses.length === 0" class="empty-state">
+        <p>You haven't enrolled in any courses yet. Switch to "All Available Courses" to enroll!</p>
+    </div>
+
+    <!-- Course Grid -->
+    <div class="courses-grid">
+        <div class="course-card" *ngFor="let course of displayedCourses">
+            <div class="card-top">
+                <span class="duration-tag">⏱️ {{ course.duration }}</span>
+            </div>
+
+            <h3>{{ course.title }}</h3>
+            <p class="description">{{ course.description }}</p>
+
+            <div class="instructor-info">
+                <span>Instructor: <strong>{{ course.instructor }}</strong></span>
+            </div>
+
+            <!-- Progress bar if enrolled -->
+            <div class="progress-section" *ngIf="course.isEnrolled">
+                <div class="progress-label">
+                    <span>Progress</span>
+                    <span>{{ course.progress }}%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" [style.width.%]="course.progress"></div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="card-footer">
+                <button class="btn-enroll" [class.enrolled]="course.isEnrolled" (click)="enrollCourse(course)">
+                    {{ course.isEnrolled ? 'Enrolled ✓' : 'Enroll Now' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
