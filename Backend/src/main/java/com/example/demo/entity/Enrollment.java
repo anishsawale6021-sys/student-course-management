@@ -19,14 +19,12 @@ public class Enrollment {
 
 	private LocalDate enrollmentDate;
 
-	// Added progress field for persistence (defaults to 15%)
 	private Integer progress = 15;
 
-	// Default Constructor
+	
 	public Enrollment() {
 	}
 
-	// Getters and Setters
 	public Long getId() {
 		return id;
 	}

@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import com.example.demo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -16,7 +18,9 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // 1. User Registration Endpoint
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
@@ -27,7 +31,6 @@ public class AuthController {
         }
     }
 
-    // 2. User Login Endpoint
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody Map<String, String> credentials) {
         try {
@@ -35,13 +38,18 @@ public class AuthController {
             String password = credentials.get("password");
 
             User user = userService.loginUser(email, password);
-            return ResponseEntity.ok(user);
+            String token = jwtUtil.generateToken(user.getEmail());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", user);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
         }
     }
 
-    // 3. Update Profile (Name & Phone) Endpoint
     @PutMapping("/update-profile")
     public ResponseEntity<?> updateProfile(@RequestBody User user) {
         try {
@@ -52,7 +60,6 @@ public class AuthController {
         }
     }
 
-    // 4. Update Password Endpoint
     @PutMapping("/update-password")
     public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> payload) {
         try {

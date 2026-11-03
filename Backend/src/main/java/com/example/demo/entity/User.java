@@ -16,9 +16,9 @@ public class User {
 
 	private String password;
 	private String phone;
-	private String role; // 'STUDENT' or 'ADMIN'
+	private String role; 
 
-	// Getters and Setters
+	
 	public Long getId() {
 		return id;
 	}

@@ -16,7 +16,7 @@ public class EnrollmentController {
 	@Autowired
 	private EnrollmentService enrollmentService;
 
-	// POST /api/courses/{id}/enroll - Enroll in a course[cite: 6]
+
 	@PostMapping("/courses/{id}/enroll")
 	public Enrollment enrollCourse(@PathVariable Long id, @RequestBody Map<String, String> requestBody) {
 		String courseTitle = requestBody.get("courseTitle");
@@ -27,7 +27,7 @@ public class EnrollmentController {
 		return enrollmentService.enrollStudent(id, courseTitle, instructor, studentName, studentEmail);
 	}
 
-	// GET /api/enrollments - My courses / Student enrollments[cite: 6]
+
 	@GetMapping("/enrollments")
 	public List<Enrollment> getEnrollments(@RequestParam(required = false) String email) {
 		if (email != null && !email.isEmpty()) {
@@ -36,8 +36,7 @@ public class EnrollmentController {
 		return enrollmentService.getAllEnrollments();
 	}
 
-	// PUT /api/enrollments/{id}/progress - Update enrollment progress and save to
-	// MySQL
+	
 	@PutMapping("/enrollments/{id}/progress")
 	public Enrollment updateProgress(@PathVariable Long id, @RequestBody Map<String, Integer> requestBody) {
 		Integer progress = requestBody.get("progress");

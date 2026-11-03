@@ -16,7 +16,7 @@ public class EnrollmentService {
 
 	public Enrollment enrollStudent(Long courseId, String courseTitle, String instructor, String studentName,
 			String studentEmail) {
-		// Check for duplicate enrollment rule
+	
 		boolean alreadyEnrolled = enrollmentRepository.existsByCourseIdAndStudentEmail(courseId, studentEmail);
 		if (alreadyEnrolled) {
 			throw new RuntimeException("Student is already enrolled in this course!");
@@ -29,7 +29,7 @@ public class EnrollmentService {
 		enrollment.setStudentName(studentName);
 		enrollment.setStudentEmail(studentEmail);
 		enrollment.setEnrollmentDate(LocalDate.now());
-		enrollment.setProgress(15); // Default starting progress
+		enrollment.setProgress(15);
 
 		return enrollmentRepository.save(enrollment);
 	}
@@ -42,7 +42,7 @@ public class EnrollmentService {
 		return enrollmentRepository.findAll();
 	}
 
-	// Method to update and persist progress in MySQL
+
 	public Enrollment updateEnrollmentProgress(Long id, Integer progress) {
 		Enrollment enrollment = enrollmentRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Enrollment not found with id: " + id));

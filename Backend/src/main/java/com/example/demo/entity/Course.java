@@ -17,11 +17,10 @@ public class Course {
 	private String instructor;
 	private String duration;
 
-	// Default Constructor
+	
 	public Course() {
 	}
 
-	// Getters and Setters
 	public Long getId() {
 		return id;
 	}

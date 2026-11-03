@@ -14,7 +14,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public User registerUser(User user) {
-        // Optional: Add duplicate email check or password hashing logic here
+       
         return userRepository.save(user);
     }
 
@@ -29,7 +29,7 @@ public class UserService {
         throw new RuntimeException("Invalid email or password");
     }
 
-    // 1. Update Profile (Name & Phone) in MySQL
+   
     public User updateUserProfile(String email, String newName, String newPhone) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
@@ -45,7 +45,7 @@ public class UserService {
         throw new RuntimeException("User not found with email: " + email);
     }
 
-    // 2. Change & Save New Password in MySQL
+  
     public boolean updatePassword(String email, String currentPassword, String newPassword) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {

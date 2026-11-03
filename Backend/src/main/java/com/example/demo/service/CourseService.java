@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Course;
 import com.example.demo.repository.CourseRepository;
+import com.example.demo.repository.EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,9 @@ public class CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private EnrollmentRepository enrollmentRepository; // Inject enrollment repository
 
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
@@ -37,6 +41,13 @@ public class CourseService {
 
     public void deleteCourse(Long id) {
         Course course = getCourseById(id);
+
+        // Guardrail: Check if active enrollments exist before deleting
+        boolean hasEnrollments = enrollmentRepository.existsByCourseId(id);
+        if (hasEnrollments) {
+            throw new RuntimeException("Cannot delete course: Students are currently enrolled in it!");
+        }
+
         courseRepository.delete(course);
     }
 }
