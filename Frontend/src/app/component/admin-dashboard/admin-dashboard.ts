@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { CourseService } from '../../services/course.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { AuthService } from '../../services/auth.service';
+import { deleteCookie, getCookie, setCookie } from '../../utils/cookie.util';
+import Swal from 'sweetalert2';
 
 export interface AdminCourse {
   id?: number;
@@ -34,7 +36,6 @@ export class AdminDashboardComponent implements OnInit {
   confirmNewPassword: string = '';
 
   isLoading: boolean = false;
-  message: string = '';
   searchTerm: string = '';
 
   courses: AdminCourse[] = [];
@@ -46,7 +47,7 @@ export class AdminDashboardComponent implements OnInit {
   selectedCourseDetails: AdminCourse | null = null;
 
   currentCourse: AdminCourse = { title: '', description: '', instructor: '', duration: '', level: 'Beginner' };
-  announcementMessage: string = sessionStorage.getItem('portalAnnouncement') || 'System Update: New courses are now live in the catalog!';
+  announcementMessage: string = getCookie('portalAnnouncement') || 'System Update: New courses are now live in the catalog!';
 
   constructor(
     private courseService: CourseService,
@@ -71,30 +72,35 @@ export class AdminDashboardComponent implements OnInit {
 
   confirmLogout(event: Event): void {
     event.preventDefault();
-    const userConfirmed = confirm('Are you sure you want to log out of EduPortal?');
-    if (userConfirmed) {
-      sessionStorage.clear();
+    void Swal.fire({
+      icon: 'warning',
+      title: 'Log out?',
+      text: 'Are you sure you want to log out of EduPortal?',
+      showCancelButton: true,
+      confirmButtonText: 'Log out',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      ['authToken', 'currentUser', 'currentUserName', 'currentUserEmail', 'currentUserRole', 'currentUserPhone', 'portalAnnouncement']
+        .forEach((name) => deleteCookie(name));
       this.router.navigate(['/login']);
-    }
+    });
   }
 
   updateAnnouncement(): void {
-    sessionStorage.setItem('portalAnnouncement', this.announcementMessage);
-    this.message = 'Announcement broadcasted successfully to all students! 📢';
-    this.cdr.detectChanges();
-    setTimeout(() => this.message = '', 3000);
+    setCookie('portalAnnouncement', this.announcementMessage);
+    void Swal.fire({ icon: 'success', title: 'Announcement broadcasted', text: 'Your announcement was shared with all students.' });
   }
 
   loadAdminProfile(): void {
-    this.adminName = sessionStorage.getItem('currentUserName') || 'Administrator';
-    this.adminEmail = sessionStorage.getItem('currentUserEmail') || '';
-    const savedPhone = sessionStorage.getItem('currentUserPhone') || '';
+    this.adminName = getCookie('currentUserName') || 'Administrator';
+    this.adminEmail = getCookie('currentUserEmail') || '';
+    const savedPhone = getCookie('currentUserPhone') || '';
     this.adminPhone = /^\d+$/.test(savedPhone) ? savedPhone : '';
   }
 
   switchView(view: string): void {
     this.currentView = view;
-    this.message = '';
     if (view === 'courses') this.loadCourses();
     else if (view === 'enrollments') this.loadEnrollments();
     this.cdr.detectChanges();
@@ -187,27 +193,23 @@ export class AdminDashboardComponent implements OnInit {
 
   updateProfile(): void {
     if (!this.adminName || /\d/.test(this.adminName) || !/^[A-Z]/.test(this.adminName)) {
-      this.message = 'Error: Name must start with a capital letter and contain no numbers!';
-      this.cdr.detectChanges();
+      void Swal.fire({ icon: 'error', title: 'Invalid name', text: 'Name must start with a capital letter and contain no numbers!' });
       return;
     }
 
     if (!/^[789]\d{9}$/.test(this.adminPhone)) {
-      this.message = 'Error: Phone number must be 10 digits and start with 7, 8, or 9!';
-      this.cdr.detectChanges();
+      void Swal.fire({ icon: 'error', title: 'Invalid phone number', text: 'Phone number must be 10 digits and start with 7, 8, or 9!' });
       return;
     }
 
     if (this.newPassword || this.confirmNewPassword) {
       if (this.newPassword !== this.confirmNewPassword) {
-        this.message = 'Error: New passwords do not match!';
-        this.cdr.detectChanges();
+        void Swal.fire({ icon: 'error', title: 'Password mismatch', text: 'New passwords do not match!' });
         return;
       }
       const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
       if (!passwordRegex.test(this.newPassword)) {
-        this.message = 'Error: Password must be at least 8 chars long and include letters, numbers, and a symbol!';
-        this.cdr.detectChanges();
+        void Swal.fire({ icon: 'error', title: 'Invalid password', text: 'Password must be at least 8 characters long and include letters, numbers, and a symbol!' });
         return;
       }
     }
@@ -238,30 +240,27 @@ export class AdminDashboardComponent implements OnInit {
         }
       },
       error: () => {
-        sessionStorage.setItem('currentUserName', this.adminName);
-        sessionStorage.setItem('currentUserPhone', this.adminPhone);
+        setCookie('currentUserName', this.adminName);
+        setCookie('currentUserPhone', this.adminPhone);
         this.finalizeSuccess('Profile updated locally.');
       }
     });
   }
 
   private finalizeSuccess(successMsg: string): void {
-    sessionStorage.setItem('currentUserName', this.adminName);
-    sessionStorage.setItem('currentUserPhone', this.adminPhone);
+    setCookie('currentUserName', this.adminName);
+    setCookie('currentUserPhone', this.adminPhone);
     this.isLoading = false;
-    this.message = successMsg;
     this.currentPassword = '';
     this.newPassword = '';
     this.confirmNewPassword = '';
     this.cdr.detectChanges();
-    setTimeout(() => this.message = '', 4000);
+    void Swal.fire({ icon: 'success', title: 'Profile updated', text: successMsg });
   }
 
   private handleError(errorMsg: string): void {
     this.isLoading = false;
-    this.message = errorMsg;
-    this.cdr.detectChanges();
-    setTimeout(() => this.message = '', 4000);
+    void Swal.fire({ icon: 'error', title: 'Update failed', text: errorMsg });
   }
 
   get filteredCourses() {
@@ -307,20 +306,20 @@ export class AdminDashboardComponent implements OnInit {
 
   saveCourse(): void {
     if (!this.currentCourse.title || !this.currentCourse.instructor || !this.currentCourse.duration) {
-      alert('Please fill out all required course fields.');
+      void Swal.fire({ icon: 'error', title: 'Missing information', text: 'Please fill out all required course fields.' });
       return;
     }
 
     if (/\d/.test(this.currentCourse.title)) {
-      alert('Course title cannot contain numbers!');
+      void Swal.fire({ icon: 'error', title: 'Invalid course title', text: 'Course title cannot contain numbers!' });
       return;
     }
     if (/\d/.test(this.currentCourse.instructor)) {
-      alert('Instructor name cannot contain numbers!');
+      void Swal.fire({ icon: 'error', title: 'Invalid instructor name', text: 'Instructor name cannot contain numbers!' });
       return;
     }
     if (/\d/.test(this.currentCourse.description)) {
-      alert('Description cannot contain numbers!');
+      void Swal.fire({ icon: 'error', title: 'Invalid description', text: 'Description cannot contain numbers!' });
       return;
     }
 
@@ -330,16 +329,15 @@ export class AdminDashboardComponent implements OnInit {
       this.courseService.updateCourse(this.currentCourse.id, this.currentCourse).subscribe({
         next: () => {
           this.isLoading = false;
-          this.message = 'Course updated successfully!';
+          void Swal.fire({ icon: 'success', title: 'Course updated', text: 'The course was updated successfully.' });
           this.closeModal();
           this.loadCourses();
           this.cdr.detectChanges();
-          setTimeout(() => this.message = '', 3000);
         },
         error: (err: any) => {
           console.error('Update failed:', err);
           this.isLoading = false;
-          this.message = 'Failed to update course.';
+          void Swal.fire({ icon: 'error', title: 'Update failed', text: err.error?.message || 'Failed to update course.' });
           this.cdr.detectChanges();
         }
       });
@@ -347,19 +345,18 @@ export class AdminDashboardComponent implements OnInit {
       this.courseService.createCourse(this.currentCourse).subscribe({
         next: () => {
           this.isLoading = false;
-          this.message = 'Course added successfully!';
+          void Swal.fire({ icon: 'success', title: 'Course added', text: 'The course was added successfully.' });
           const autoNotice = `🚀 New Course Added: "${this.currentCourse.title}" is now available!`;
-          sessionStorage.setItem('portalAnnouncement', autoNotice);
+          setCookie('portalAnnouncement', autoNotice);
           this.announcementMessage = autoNotice;
           this.closeModal();
           this.loadCourses();
           this.cdr.detectChanges();
-          setTimeout(() => this.message = '', 3000);
         },
         error: (err: any) => {
           console.error('Creation failed:', err);
           this.isLoading = false;
-          this.message = 'Failed to create course.';
+          void Swal.fire({ icon: 'error', title: 'Creation failed', text: err.error?.message || 'Failed to create course.' });
           this.cdr.detectChanges();
         }
       });
@@ -369,23 +366,33 @@ export class AdminDashboardComponent implements OnInit {
   deleteCourse(id?: number, event?: Event): void {
     if (event) event.stopPropagation();
     if (!id) return;
-    if (confirm('Are you sure you want to delete this course?')) {
+    void Swal.fire({
+      icon: 'warning',
+      title: 'Delete course?',
+      text: 'Are you sure you want to delete this course?',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (!result.isConfirmed) return;
       this.courseService.deleteCourse(id).subscribe({
         next: () => {
-          this.message = 'Course deleted successfully!';
+          void Swal.fire({ icon: 'success', title: 'Course deleted', text: 'The course was deleted successfully.' });
           this.closeDetailsModal();
           this.loadCourses();
           this.cdr.detectChanges();
-          setTimeout(() => this.message = '', 3000);
         },
         error: (err: any) => {
           console.error('Deletion failed:', err);
-          this.message = err.error?.message || 'Cannot delete course: Students are currently enrolled in it!';
+          void Swal.fire({
+            icon: 'error',
+            title: 'Deletion failed',
+            text: err.error?.message || 'Cannot delete course: Students are currently enrolled in it!'
+          });
           this.closeDetailsModal();
           this.cdr.detectChanges();
-          setTimeout(() => this.message = '', 4000);
         }
       });
-    }
+    });
   }
 }

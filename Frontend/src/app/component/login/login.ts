@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { setCookie } from '../../utils/cookie.util';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +16,6 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  errorMessage: string = '';
   isLoading: boolean = false;
 
   constructor(
@@ -24,18 +25,17 @@ export class LoginComponent {
 
   onLogin(): void {
     if (!this.email || !this.password) {
-      this.errorMessage = 'Please enter your email and password!';
+      void Swal.fire({ icon: 'error', title: 'Missing information', text: 'Please enter your email and password!' });
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.email)) {
-      this.errorMessage = 'Please enter a valid email address!';
+      void Swal.fire({ icon: 'error', title: 'Invalid email', text: 'Please enter a valid email address!' });
       return;
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     const credentials = {
       email: this.email,
@@ -51,30 +51,34 @@ export class LoginComponent {
         const assignedRole = (user.role || '').toLowerCase();
 
         if (token) {
-          sessionStorage.setItem('authToken', token);
+          setCookie('authToken', token);
         }
-        sessionStorage.setItem('currentUserEmail', user.email || this.email);
-        sessionStorage.setItem('currentUserName', user.name || 'User');
-        sessionStorage.setItem('currentUserRole', assignedRole);
+        setCookie('currentUserEmail', user.email || this.email);
+        setCookie('currentUserName', user.name || 'User');
+        setCookie('currentUserRole', assignedRole);
 
         if (user.phone && /^\d+$/.test(user.phone)) {
-          sessionStorage.setItem('currentUserPhone', user.phone);
+          setCookie('currentUserPhone', user.phone);
         } else {
-          sessionStorage.setItem('currentUserPhone', '');
+          setCookie('currentUserPhone', '');
         }
 
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
+        setCookie('currentUser', JSON.stringify(user));
 
-        if (assignedRole === 'admin' || assignedRole.includes('instructor')) {
-          this.router.navigate(['/admin-dashboard']);
-        } else {
-          this.router.navigate(['/student-dashboard']);
-        }
+        const destination = assignedRole === 'admin' || assignedRole.includes('instructor')
+          ? '/admin-dashboard'
+          : '/student-dashboard';
+        void Swal.fire({ icon: 'success', title: 'Welcome back!', text: 'You have signed in successfully.' })
+          .then(() => this.router.navigate([destination]));
       },
       error: (err) => {
         this.isLoading = false;
         console.error('Login failed:', err);
-        this.errorMessage = err.error?.message || 'Invalid email or password. Please check your credentials.';
+        void Swal.fire({
+          icon: 'error',
+          title: 'Login failed',
+          text: err.error?.message || 'Invalid email or password. Please check your credentials.'
+        });
       }
     });
   }

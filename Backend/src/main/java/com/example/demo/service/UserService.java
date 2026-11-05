@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,8 +14,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Injected BCrypt encoder
+
     public User registerUser(User user) {
-       
+        // Hash the password before saving to the database
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -22,14 +27,14 @@ public class UserService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            if (user.getPassword().equals(password)) {
+            // Compare raw login password with the stored BCrypt hash
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 return user;
             }
         }
         throw new RuntimeException("Invalid email or password");
     }
 
-   
     public User updateUserProfile(String email, String newName, String newPhone) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
@@ -45,14 +50,14 @@ public class UserService {
         throw new RuntimeException("User not found with email: " + email);
     }
 
-  
     public boolean updatePassword(String email, String currentPassword, String newPassword) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // Verify current password match
-            if (user.getPassword().equals(currentPassword)) {
-                user.setPassword(newPassword);
+            // Verify current password match using BCrypt matches
+            if (passwordEncoder.matches(currentPassword, user.getPassword())) {
+                // Hash and set the new password
+                user.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.save(user);
                 return true;
             } else {

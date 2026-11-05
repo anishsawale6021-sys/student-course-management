@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { getCookie } from '../utils/cookie.util';
 
 @Injectable({
     providedIn: 'root'
@@ -23,8 +24,8 @@ export class EnrollmentService {
     }
 
     enrollCourse(course: any): Observable<any> {
-        const studentEmail = sessionStorage.getItem('currentUserEmail') || 'radha@gmail.com';
-        const studentName = sessionStorage.getItem('currentUserName') || 'Radha';
+        const studentEmail = getCookie('currentUserEmail') || 'radha@gmail.com';
+        const studentName = getCookie('currentUserName') || 'Radha';
 
         const payload = {
             courseTitle: course.title || course.courseTitle,

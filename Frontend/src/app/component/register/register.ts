@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,6 @@ export class Register {
   password: string = '';
   confirmPassword: string = '';
   role: string = 'student';
-  errorMessage: string = '';
   isLoading: boolean = false;
 
   constructor(
@@ -64,43 +64,43 @@ export class Register {
   onRegister(): void {
     // 1. Check empty fields
     if (!this.name || !this.email || !this.phone || !this.password || !this.confirmPassword) {
-      this.errorMessage = 'Please fill in all required fields!';
+      void Swal.fire({ icon: 'error', title: 'Missing information', text: 'Please fill in all required fields!' });
       return;
     }
 
     // 2. Validate Name: Must start with capital letter per word and contain no numbers
     if (/\d/.test(this.name)) {
-      this.errorMessage = 'Name cannot contain numbers!';
+      void Swal.fire({ icon: 'error', title: 'Invalid name', text: 'Name cannot contain numbers!' });
       return;
     }
     if (!/^[A-Z]/.test(this.name)) {
-      this.errorMessage = 'Name must start with a capital letter!';
+      void Swal.fire({ icon: 'error', title: 'Invalid name', text: 'Name must start with a capital letter!' });
       return;
     }
 
     // 3. Validate Phone Number: Exactly 10 digits, starting with 7, 8, or 9
     if (!/^[789]\d{9}$/.test(this.phone)) {
-      this.errorMessage = 'Phone number must be 10 digits, start with 7, 8, or 9, and contain numbers only!';
+      void Swal.fire({ icon: 'error', title: 'Invalid phone number', text: 'Phone number must be 10 digits, start with 7, 8, or 9, and contain numbers only!' });
       return;
     }
 
     // 4. Validate Email format: Compulsory @gmail.com check
     const gmailRegex = /^[^\s@]+@gmail\.com$/i;
     if (!gmailRegex.test(this.email)) {
-      this.errorMessage = 'Email must be a valid @gmail.com address!';
+      void Swal.fire({ icon: 'error', title: 'Invalid email', text: 'Email must be a valid @gmail.com address!' });
       return;
     }
 
     // 5. Validate Password: Min 8 chars, letters, numbers, and symbol required
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
     if (!passwordRegex.test(this.password)) {
-      this.errorMessage = 'Password must be at least 8 characters long and contain letters, numbers, and a symbol!';
+      void Swal.fire({ icon: 'error', title: 'Invalid password', text: 'Password must be at least 8 characters long and contain letters, numbers, and a symbol!' });
       return;
     }
 
     // 6. Password Match Check
     if (this.password !== this.confirmPassword) {
-      this.errorMessage = 'Passwords do not match!';
+      void Swal.fire({ icon: 'error', title: 'Password mismatch', text: 'Passwords do not match!' });
       return;
     }
 
@@ -113,19 +113,22 @@ export class Register {
     };
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     // Call Spring Boot backend to save into MySQL database
     this.authService.register(newUser).subscribe({
-      next: (response) => {
+      next: () => {
         this.isLoading = false;
-        alert('Registration successful! Please sign in.');
-        this.router.navigate(['/login']);
+        void Swal.fire({ icon: 'success', title: 'Registration successful', text: 'Please sign in.' })
+          .then(() => this.router.navigate(['/login']));
       },
       error: (err) => {
         this.isLoading = false;
         console.error('Registration failed:', err);
-        this.errorMessage = err.error?.message || 'Registration failed. Email might already be registered in the system.';
+        void Swal.fire({
+          icon: 'error',
+          title: 'Registration failed',
+          text: err.error?.message || 'Email might already be registered in the system.'
+        });
       }
     });
   }

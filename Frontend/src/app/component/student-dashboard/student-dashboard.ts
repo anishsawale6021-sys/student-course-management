@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { CourseService } from '../../services/course.service';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { AuthService } from '../../services/auth.service';
+import { deleteCookie, getCookie, setCookie } from '../../utils/cookie.util';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -26,7 +28,6 @@ export class StudentDashboardComponent implements OnInit {
 
   isLoading: boolean = false;
   enrollingCourseId: number | null = null;
-  message: string = '';
   searchTerm: string = '';
 
   showAnnouncement: boolean = true;
@@ -63,15 +64,23 @@ export class StudentDashboardComponent implements OnInit {
 
   confirmLogout(event: Event): void {
     event.preventDefault();
-    const userConfirmed = confirm('Are you sure you want to log out of EduPortal?');
-    if (userConfirmed) {
-      sessionStorage.clear();
+    void Swal.fire({
+      icon: 'warning',
+      title: 'Log out?',
+      text: 'Are you sure you want to log out of EduPortal?',
+      showCancelButton: true,
+      confirmButtonText: 'Log out',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      ['authToken', 'currentUser', 'currentUserName', 'currentUserEmail', 'currentUserRole', 'currentUserPhone', 'portalAnnouncement']
+        .forEach((name) => deleteCookie(name));
       this.router.navigate(['/login']);
-    }
+    });
   }
 
   loadAnnouncement(): void {
-    this.announcementText = sessionStorage.getItem('portalAnnouncement') || 'Welcome to EduPortal! Check out our latest available courses.';
+    this.announcementText = getCookie('portalAnnouncement') || 'Welcome to EduPortal! Check out our latest available courses.';
   }
 
   dismissAnnouncement(): void {
@@ -84,10 +93,10 @@ export class StudentDashboardComponent implements OnInit {
   }
 
   loadStudentProfile(): void {
-    this.studentName = sessionStorage.getItem('currentUserName') || 'Radha';
-    this.studentEmail = sessionStorage.getItem('currentUserEmail') || 'radha@gmail.com';
+    this.studentName = getCookie('currentUserName') || 'Radha';
+    this.studentEmail = getCookie('currentUserEmail') || 'radha@gmail.com';
 
-    const savedPhone = sessionStorage.getItem('currentUserPhone') || '';
+    const savedPhone = getCookie('currentUserPhone') || '';
     this.studentPhone = /^\d+$/.test(savedPhone) ? savedPhone : '';
   }
 
@@ -107,8 +116,7 @@ export class StudentDashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load courses:', err);
-        this.message = 'Error: Unable to fetch course catalog.';
-        this.cdr.detectChanges();
+        void Swal.fire({ icon: 'error', title: 'Unable to load courses', text: 'Unable to fetch the course catalog.' });
       }
     });
   }
@@ -154,7 +162,6 @@ export class StudentDashboardComponent implements OnInit {
 
   switchView(view: string): void {
     this.currentView = view;
-    this.message = '';
     if (view === 'catalog' || view === 'enrolled') {
       this.loadDashboardData();
     }
@@ -204,7 +211,7 @@ export class StudentDashboardComponent implements OnInit {
     if (!course || !courseId) return;
 
     if (this.isEnrolled(courseId)) {
-      this.message = 'You are already enrolled in this course!';
+      void Swal.fire({ icon: 'error', title: 'Already enrolled', text: 'You are already enrolled in this course!' });
       return;
     }
 
@@ -212,19 +219,16 @@ export class StudentDashboardComponent implements OnInit {
     this.enrollmentService.enrollCourse(course).subscribe({
       next: () => {
         this.enrollingCourseId = null;
-        this.message = `Successfully enrolled in "${courseTitle}"!`;
+        void Swal.fire({ icon: 'success', title: 'Enrollment successful', text: `You are now enrolled in "${courseTitle}".` });
         this.recentActivities.unshift({ icon: '🎉', text: `Enrolled in "${courseTitle}"`, time: 'Just now' });
         this.closeDetailsModal();
         this.loadEnrolledCourses();
         this.cdr.detectChanges();
-        setTimeout(() => this.message = '', 3000);
       },
       error: (err) => {
         console.error('Enrollment failed:', err);
         this.enrollingCourseId = null;
-        this.message = err.error?.message || 'Failed to enroll in course.';
-        this.cdr.detectChanges();
-        setTimeout(() => this.message = '', 4000);
+        void Swal.fire({ icon: 'error', title: 'Enrollment failed', text: err.error?.message || 'Failed to enroll in course.' });
       }
     });
   }
@@ -237,26 +241,36 @@ export class StudentDashboardComponent implements OnInit {
     this.enrollmentService.updateProgress(enrollmentId, newProgress).subscribe({
       next: () => {
         item.progress = newProgress;
-        this.message = item.progress === 100 ? `Congratulations! You completed "${item.courseTitle}"! 🎓` : `Progress updated to ${item.progress}%!`;
-        this.cdr.detectChanges();
-        setTimeout(() => this.message = '', 3000);
+        const text = item.progress === 100
+          ? `Congratulations! You completed "${item.courseTitle}"!`
+          : `Progress updated to ${item.progress}%.`;
+        void Swal.fire({ icon: 'success', title: item.progress === 100 ? 'Course completed' : 'Progress updated', text });
       },
       error: () => {
         item.progress = newProgress;
-        this.message = `Progress updated locally to ${item.progress}%!`;
-        this.cdr.detectChanges();
-        setTimeout(() => this.message = '', 3000);
+        void Swal.fire({
+          icon: 'warning',
+          title: 'Progress updated locally',
+          text: `Progress updated locally to ${item.progress}%.`
+        });
       }
     });
   }
 
   unenrollCourse(courseId: number): void {
-    if (confirm('Are you sure you want to unenroll from this course?')) {
+    void Swal.fire({
+      icon: 'warning',
+      title: 'Unenroll from course?',
+      text: 'Are you sure you want to unenroll from this course?',
+      showCancelButton: true,
+      confirmButtonText: 'Unenroll',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (!result.isConfirmed) return;
       this.enrolledCourses = this.enrolledCourses.filter(e => e.courseId !== courseId);
-      this.message = 'Successfully unenrolled from course.';
+      void Swal.fire({ icon: 'success', title: 'Unenrolled', text: 'You have been unenrolled from the course.' });
       this.cdr.detectChanges();
-      setTimeout(() => this.message = '', 3000);
-    }
+    });
   }
 
   onStudentNameInput(event: any): void {
@@ -286,27 +300,23 @@ export class StudentDashboardComponent implements OnInit {
 
   updateProfile(): void {
     if (!this.studentName || /\d/.test(this.studentName) || !/^[A-Z]/.test(this.studentName)) {
-      this.message = 'Error: Name must start with a capital letter and contain no numbers!';
-      this.cdr.detectChanges();
+      void Swal.fire({ icon: 'error', title: 'Invalid name', text: 'Name must start with a capital letter and contain no numbers!' });
       return;
     }
 
     if (!/^[789]\d{9}$/.test(this.studentPhone)) {
-      this.message = 'Error: Phone number must be 10 digits and start with 7, 8, or 9!';
-      this.cdr.detectChanges();
+      void Swal.fire({ icon: 'error', title: 'Invalid phone number', text: 'Phone number must be 10 digits and start with 7, 8, or 9!' });
       return;
     }
 
     if (this.newPassword || this.confirmNewPassword) {
       if (this.newPassword !== this.confirmNewPassword) {
-        this.message = 'Error: New passwords do not match!';
-        this.cdr.detectChanges();
+        void Swal.fire({ icon: 'error', title: 'Password mismatch', text: 'New passwords do not match!' });
         return;
       }
       const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
       if (!passwordRegex.test(this.newPassword)) {
-        this.message = 'Error: Password must be at least 8 chars long and include letters, numbers, and a symbol!';
-        this.cdr.detectChanges();
+        void Swal.fire({ icon: 'error', title: 'Invalid password', text: 'Password must be at least 8 characters long and include letters, numbers, and a symbol!' });
         return;
       }
     }
@@ -337,29 +347,26 @@ export class StudentDashboardComponent implements OnInit {
         }
       },
       error: () => {
-        sessionStorage.setItem('currentUserName', this.studentName);
-        sessionStorage.setItem('currentUserPhone', this.studentPhone);
+        setCookie('currentUserName', this.studentName);
+        setCookie('currentUserPhone', this.studentPhone);
         this.finalizeSuccess('Profile updated locally (Database sync warning).');
       }
     });
   }
 
   private finalizeSuccess(successMsg: string): void {
-    sessionStorage.setItem('currentUserName', this.studentName);
-    sessionStorage.setItem('currentUserPhone', this.studentPhone);
+    setCookie('currentUserName', this.studentName);
+    setCookie('currentUserPhone', this.studentPhone);
     this.isLoading = false;
-    this.message = successMsg;
     this.currentPassword = '';
     this.newPassword = '';
     this.confirmNewPassword = '';
     this.cdr.detectChanges();
-    setTimeout(() => this.message = '', 4000);
+    void Swal.fire({ icon: 'success', title: 'Profile updated', text: successMsg });
   }
 
   private handleError(errorMsg: string): void {
     this.isLoading = false;
-    this.message = errorMsg;
-    this.cdr.detectChanges();
-    setTimeout(() => this.message = '', 4000);
+    void Swal.fire({ icon: 'error', title: 'Update failed', text: errorMsg });
   }
 }
