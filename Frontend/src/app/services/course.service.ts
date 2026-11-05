@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class CourseService {
-    private baseUrl = 'http://localhost:8081/api';
+    private baseUrl = 'https://student-course-management-d0ud.onrender.com/api';
 
     constructor(private http: HttpClient) { }
 

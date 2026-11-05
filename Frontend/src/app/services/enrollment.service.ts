@@ -7,7 +7,7 @@ import { getCookie } from '../utils/cookie.util';
     providedIn: 'root'
 })
 export class EnrollmentService {
-    private apiUrl = 'http://localhost:8081/api';
+    private apiUrl = 'https://student-course-management-d0ud.onrender.com/api';
 
     constructor(private http: HttpClient) { }
 
